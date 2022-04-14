@@ -4,6 +4,7 @@
 #include <time.h>
 #include <Windows.h>
 #include <stdlib.h>
+#include <fstream.h>
 #include "Screen.h"
 
 void Init();
@@ -324,8 +325,7 @@ void OutputGameOver()
 {
 	char string[100];
 
-	if (HighScore <= Score)
-		HighScore = Score;
+	SetScore();
 	
 	SetColor(14);
 	sprintf_s(string, "High Score¡Ú : %d", HighScore);
@@ -410,6 +410,26 @@ bool Checkitem()
 		return true;
 	}
 		
+}
+
+void SetScore()
+{
+	ifstream fin("score.txt");
+
+	fin.read((char*)&HighScore, sizeof(int));
+
+	if (HighScore < Score)
+	{
+		ofstream fout("score.txt");
+
+		HighScore = Score;
+
+		fout.write((char*)&HighScore, sizeof(int));
+
+		fout.close();
+	}
+
+	fin.close();
 }
 
 int main()
